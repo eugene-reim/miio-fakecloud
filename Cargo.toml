@@ -1,0 +1,10 @@
+[package]
+name = "miio-fakecloud"
+version = "0.1.0"
+edition = "2024"
+authors = [ "eugene-reim <eugene.reim@gmail.com>" ]
+license = "Unlicense"
+homepage = "https://github.com/eugene-reim/miio-fakecloud"
+repository = "https://github.com/eugene-reim/miio-fakecloud"
+
+[dependencies]

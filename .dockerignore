@@ -1,0 +1,6 @@
+/target
+.git
+.kilo
+.github
+*.md
+docker-compose.yml

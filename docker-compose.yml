@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  miio-fakecloud:
+    image: ghcr.io/eugene-reim/miio-fakecloud:latest
+    container_name: miio-fakecloud
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - "8053:8053/udp"
+      - "8053:8053/tcp"
