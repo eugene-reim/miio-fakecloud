@@ -1,1 +1,3 @@
 /target
+/.kilo
+docker-compose.test.yml

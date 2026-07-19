@@ -67,36 +67,38 @@ fn serve_tcp() -> () {
 
     for stream in listener.incoming() {
         if let Ok(mut stream) = stream {
-            std::thread::spawn(move || loop {
-                use std::io::{Read, Write};
-                let mut inbuf = [0; 1024];
-                let mut outbuf = [0; 256];
-                if let Err(x) = stream.read_exact(&mut inbuf[..32]) {
-                    eprintln!(
-                        " could not read (initial): {:?}, probably just a disconnection",
-                        x
-                    );
-                    return;
-                }
-                if let Some(field_len) = validate_and_get_len(&inbuf[..32]) {
-                    if field_len < 32 {
-                        eprintln!(" bad length {} < 32", field_len);
-                        continue;
+            std::thread::spawn(move || {
+                loop {
+                    use std::io::{Read, Write};
+                    let mut inbuf = [0; 1024];
+                    let mut outbuf = [0; 256];
+                    if let Err(x) = stream.read_exact(&mut inbuf[..32]) {
+                        eprintln!(
+                            " could not read (initial): {:?}, probably just a disconnection",
+                            x
+                        );
+                        return;
                     }
-                    if field_len > 32 {
-                        if let Err(x) = stream.read_exact(&mut inbuf[32..field_len]) {
-                            eprintln!(" could not read (continuation): {:?}", x);
-                            return;
+                    if let Some(field_len) = validate_and_get_len(&inbuf[..32]) {
+                        if field_len < 32 {
+                            eprintln!(" bad length {} < 32", field_len);
+                            continue;
                         }
+                        if field_len > 32 {
+                            if let Err(x) = stream.read_exact(&mut inbuf[32..field_len]) {
+                                eprintln!(" could not read (continuation): {:?}", x);
+                                return;
+                            }
+                        }
+                        // eprintln!("TCP< {:?} {:x?}", field_len, &inbuf[..field_len]);
+                        let outlen = process("TCP", &inbuf[..field_len], &mut outbuf);
+                        if outlen > 0 {
+                            // eprintln!("TCP> {:?} {:x?}", outlen, &outbuf[..outlen]);
+                            stream.write(&outbuf[..outlen]).unwrap();
+                        }
+                    } else {
+                        eprintln!(" not a valid message??");
                     }
-                    // eprintln!("TCP< {:?} {:x?}", field_len, &inbuf[..field_len]);
-                    let outlen = process("TCP", &inbuf[..field_len], &mut outbuf);
-                    if outlen > 0 {
-                        // eprintln!("TCP> {:?} {:x?}", outlen, &outbuf[..outlen]);
-                        stream.write(&outbuf[..outlen]).unwrap();
-                    }
-                } else {
-                    eprintln!(" not a valid message??");
                 }
             });
         }

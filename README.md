@@ -42,7 +42,3 @@ Or with the provided Compose file:
 ```
 docker compose up -d
 ```
-
-## License
-
-Released into the public domain under the [Unlicense](https://unlicense.org).
