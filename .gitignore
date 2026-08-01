@@ -1,3 +1,16 @@
+# Rust build output
 /target
+
+# Backup / editor files
+**/*.rs.bk
+**/*.swp
+**/*.swo
+.idea/
+.vscode/
+.DS_Store
+
+# Local tooling
 /.kilo
+
+# Test-only compose override
 docker-compose.test.yml

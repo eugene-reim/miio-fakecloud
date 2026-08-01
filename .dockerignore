@@ -1,6 +1,22 @@
+# Build artifacts
 /target
+
+# VCS and CI
 .git
-.kilo
 .github
+
+# Editor / local tooling
+.kilo
+.idea
+.vscode
+**/*.rs.bk
+**/*.swp
+**/*.swo
+.DS_Store
+
+# Docs and compose files are not needed inside the image context
 *.md
-docker-compose.yml
+docker-compose*.yml
+.gitignore
+.dockerignore
+Dockerfile
